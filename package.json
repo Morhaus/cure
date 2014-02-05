@@ -1,0 +1,31 @@
+{
+  "name": "cure",
+  "description": "Object sanitization and validation",
+  "author": "Alexandre Kirszenberg <a.kirszenberg@gmail.com>",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:morhaus/cure.git"
+  },
+  "scripts": {
+    "test": "mocha --compilers coffee:coffee-script/register -R spec",
+    "prepublish": "gulp default --require coffee-script/register",
+    "monitor": "gulp monitor --require coffee-script/register"
+  },
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "dependencies": {
+    "async": "~0.2.9",
+    "lodash": "~2.3.0"
+  },
+  "devDependencies": {
+    "mocha": "*",
+    "expect.js": "*",
+    "coffee-script": "~1.7.1",
+    "gulp": "*",
+    "gulp-coffee": "*",
+    "gulp-clean": "*"
+  }
+}
