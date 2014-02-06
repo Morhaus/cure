@@ -1,10 +1,10 @@
 expect = require 'expect.js'
-ts = require '../src'
+cure = require '../src'
 
 describe 'NumberSchema', ->
   describe '#min()', ->
     it 'should test the value against a minimal value', ->
-      ts.number.min 6
+      cure.number.min 6
         .validate 6, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 6
@@ -19,7 +19,7 @@ describe 'NumberSchema', ->
 
   describe '#max()', ->
     it 'should test the value against a maximal value', ->
-      ts.number.max 6
+      cure.number.max 6
         .validate 6, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 6
@@ -34,7 +34,7 @@ describe 'NumberSchema', ->
 
   describe '#int()', ->
     it 'should test if the value is an integer', ->
-      ts.number.int()
+      cure.number.int()
         .validate 10, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 10

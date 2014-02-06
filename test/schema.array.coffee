@@ -1,17 +1,17 @@
 expect = require 'expect.js'
-ts = require '../src'
+cure = require '../src'
 
 describe 'ArraySchema', ->
   describe '#slice()', ->
     it 'should slice the array', ->
-      ts.array.slice 1, 3
+      cure.array.slice 1, 3
         .validate [1, 2, 3, 4], (err, value) ->
           expect(err).to.be null
           expect(value).to.eql [2, 3]
 
   describe '#includes()', ->
     it 'should test if the array includes a value', ->
-      ts.array.includes 'cat'
+      cure.array.includes 'cat'
         .validate ['dragon', 'dog', 'cat'], (err, value) ->
           expect(err).to.be null
           expect(value).to.eql ['dragon', 'dog', 'cat']
@@ -21,7 +21,7 @@ describe 'ArraySchema', ->
           expect(value).to.eql ['dog', 'lizard']
 
     it 'should test if the array includes multiple values', ->
-      ts.array.includes 'cat', 'dog'
+      cure.array.includes 'cat', 'dog'
         .validate ['dog', 'cat', 'cameleon'], (err, value) ->
           expect(err).to.be null
           expect(value).to.eql ['dog', 'cat', 'cameleon']
@@ -36,7 +36,7 @@ describe 'ArraySchema', ->
 
   describe '#excludes()', ->
     it 'should test if the array excludes a value', ->
-      ts.array.excludes 'cat'
+      cure.array.excludes 'cat'
         .validate ['dragon', 'dog', 'cat'], (err, value) ->
           expect(err).to.be 'excludes'
           expect(value).to.eql ['dragon', 'dog', 'cat']
@@ -46,7 +46,7 @@ describe 'ArraySchema', ->
           expect(value).to.eql ['dog', 'lizard']
 
     it 'should test if the array excludes multiple values', ->
-      ts.array.excludes 'cat', 'dog'
+      cure.array.excludes 'cat', 'dog'
         .validate ['dog', 'cat', 'cameleon'], (err, value) ->
           expect(err).to.be 'excludes'
           expect(value).to.eql ['dog', 'cat', 'cameleon']
@@ -65,7 +65,7 @@ describe 'ArraySchema', ->
 
   describe '#minLen()', ->
     it 'should test the length of the array against a minimal length', ->
-      ts.array.minLen 4
+      cure.array.minLen 4
         .validate [1, 2, 3], (err, value) ->
           expect(err).to.be 'minLen'
           expect(value).to.eql [1, 2, 3]
@@ -80,7 +80,7 @@ describe 'ArraySchema', ->
 
   describe '#maxLen()', ->
     it 'should test the length of the array against a maximal length', ->
-      ts.array.maxLen 4
+      cure.array.maxLen 4
         .validate [1, 2, 3], (err, value) ->
           expect(err).to.be null
           expect(value).to.eql [1, 2, 3]
@@ -95,7 +95,7 @@ describe 'ArraySchema', ->
 
   describe '#len()', ->
     it 'should test the length of the array against a given length', ->
-      ts.array.len 4
+      cure.array.len 4
         .validate [1, 2, 3], (err, value) ->
           expect(err).to.be 'len'
           expect(value).to.eql [1, 2, 3]

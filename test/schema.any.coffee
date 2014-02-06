@@ -1,10 +1,10 @@
 expect = require 'expect.js'
-ts = require '../src'
+cure = require '../src'
 
 describe 'AnySchema', ->
   describe '#cast()', ->
     it 'should cast the value to the specified type', ->
-      ts.any.cast Number
+      cure.any.cast Number
         .validate '5', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 5
@@ -15,7 +15,7 @@ describe 'AnySchema', ->
 
   describe '#toJSON()', ->
     it 'should format the value to JSON', ->
-      ts.any.toJSON()
+      cure.any.toJSON()
         .validate 'test', (err, value) ->
           expect(err).to.be null
           expect(value).to.be '"test"'
@@ -26,7 +26,7 @@ describe 'AnySchema', ->
 
   describe '#in()', ->
     it 'should test if the value is in the supplied array', ->
-      ts.any.in ['toast', 'test', 'pony']
+      cure.any.in ['toast', 'test', 'pony']
         .validate 'toast', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'toast'
@@ -42,7 +42,7 @@ describe 'AnySchema', ->
       pony = new Object
       test = new Object
 
-      ts.any.strictIn [kitty, toast, pony]
+      cure.any.strictIn [kitty, toast, pony]
         .validate toast, (err, value) ->
           expect(err).to.be null
           expect(value).to.be toast
@@ -53,7 +53,7 @@ describe 'AnySchema', ->
 
   describe '#equals()', ->
     it 'should test if the value corresponds to the supplied value', ->
-      ts.any.equals 4
+      cure.any.equals 4
         .validate 4, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 4
@@ -67,7 +67,7 @@ describe 'AnySchema', ->
       kitty = new Object
       toast = new Object
 
-      ts.any.strictEquals kitty
+      cure.any.strictEquals kitty
         .validate kitty, (err, value) ->
           expect(err).to.be null
           expect(value).to.be kitty
@@ -78,7 +78,7 @@ describe 'AnySchema', ->
 
   describe '#empty()', ->
     it 'should test if the value is empty', ->
-      ts.any.empty()
+      cure.any.empty()
         .validate '', (err, value) ->
           expect(err).to.be null
           expect(value).to.be ''
@@ -105,7 +105,7 @@ describe 'AnySchema', ->
 
   describe '#type()', ->
     it 'should test the type of the value against a given type', ->
-      ts.any.type String
+      cure.any.type String
         .validate '', (err, value) ->
           expect(err).to.be null
           expect(value).to.be ''
@@ -114,7 +114,7 @@ describe 'AnySchema', ->
           expect(err).to.be 'type'
           expect(value).to.eql []
 
-      ts.any.type Array
+      cure.any.type Array
         .validate '', (err, value) ->
           expect(err).to.be 'type'
           expect(value).to.be ''
@@ -125,7 +125,7 @@ describe 'AnySchema', ->
 
   describe '#gt()', ->
     it 'should check if the value is greater than a given value', ->
-      ts.any.gt 5
+      cure.any.gt 5
         .validate '4', (err, value) ->
           expect(err).to.be 'gt'
           expect(value).to.be '4'
@@ -146,7 +146,7 @@ describe 'AnySchema', ->
           expect(err).to.be null
           expect(value).to.be '6'
 
-      ts.any.gt 'e'
+      cure.any.gt 'e'
         .validate 'a', (err, value) ->
           expect(err).to.be 'gt'
           expect(value).to.be 'a'
@@ -161,7 +161,7 @@ describe 'AnySchema', ->
 
   describe '#gte()', ->
     it 'should check if the value is greater than or equal to a given value', ->
-      ts.any.gte 5
+      cure.any.gte 5
         .validate '4', (err, value) ->
           expect(err).to.be 'gte'
           expect(value).to.be '4'
@@ -182,7 +182,7 @@ describe 'AnySchema', ->
           expect(err).to.be null
           expect(value).to.be '6'
 
-      ts.any.gte 'e'
+      cure.any.gte 'e'
         .validate 'a', (err, value) ->
           expect(err).to.be 'gte'
           expect(value).to.be 'a'
@@ -197,7 +197,7 @@ describe 'AnySchema', ->
 
   describe '#lt()', ->
     it 'should check if the value is less than a given value', ->
-      ts.any.lt 5
+      cure.any.lt 5
         .validate '4', (err, value) ->
           expect(err).to.be null
           expect(value).to.be '4'
@@ -218,7 +218,7 @@ describe 'AnySchema', ->
           expect(err).to.be 'lt'
           expect(value).to.be '6'
 
-      ts.any.lt 'e'
+      cure.any.lt 'e'
         .validate 'a', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'a'
@@ -233,7 +233,7 @@ describe 'AnySchema', ->
 
   describe '#lte()', ->
     it 'should check if the value is less than a given value', ->
-      ts.any.lte 5
+      cure.any.lte 5
         .validate '4', (err, value) ->
           expect(err).to.be null
           expect(value).to.be '4'
@@ -254,7 +254,7 @@ describe 'AnySchema', ->
           expect(err).to.be 'lte'
           expect(value).to.be '6'
 
-      ts.any.lte 'e'
+      cure.any.lte 'e'
         .validate 'a', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'a'
@@ -269,12 +269,12 @@ describe 'AnySchema', ->
 
   describe '#action()', ->
     it 'should execute an action on the value', ->
-      ts.any.action -> @next ['hello', @value]
+      cure.any.action -> @next ['hello', @value]
         .validate 'you', (err, value) ->
           expect(err).to.be null
           expect(value).to.eql ['hello', 'you']
 
-      ts.any.action -> if @value is 'cat' then (@next "kitty #{@value}") else (@fail 'sad face :(')
+      cure.any.action -> if @value is 'cat' then (@next "kitty #{@value}") else (@fail 'sad face :(')
         .validate 'cat', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'kitty cat'

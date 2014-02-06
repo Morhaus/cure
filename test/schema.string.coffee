@@ -1,23 +1,23 @@
 expect = require 'expect.js'
-ts = require '../src'
+cure = require '../src'
 
 describe 'StringSchema', ->
   describe '#split()', ->
     it 'should split the string according to a sub-string', ->
-      ts.string.split ' '
+      cure.string.split ' '
         .validate 'hello there', (err, value) ->
           expect(err).to.be null
           expect(value).to.eql ['hello', 'there']
 
     it 'should split the string according to a regex', ->
-      ts.string.split /\s+/
+      cure.string.split /\s+/
         .validate 'hello hello    hiiii', (err, value) ->
           expect(err).to.be null
           expect(value).to.eql ['hello', 'hello', 'hiiii']
 
   describe '#append()', ->
     it 'should append to the string', ->
-      ts.string.append ' test'
+      cure.string.append ' test'
         .validate 'cat', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'cat test'
@@ -28,7 +28,7 @@ describe 'StringSchema', ->
 
   describe '#prepend()', ->
     it 'should prepend to the string', ->
-      ts.string.prepend 'i like '
+      cure.string.prepend 'i like '
         .validate 'cats', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'i like cats'
@@ -39,7 +39,7 @@ describe 'StringSchema', ->
 
   describe '#surround()', ->
     it 'should surround the string', ->
-      ts.string.surround 'o'
+      cure.string.surround 'o'
         .validate '_', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'o_o'
@@ -50,7 +50,7 @@ describe 'StringSchema', ->
 
   describe '#trim()', ->
     it 'should trim the string', ->
-      ts.string.trim()
+      cure.string.trim()
         .validate '      hello    hello     ', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'hello    hello'
@@ -61,14 +61,14 @@ describe 'StringSchema', ->
 
   describe '#parseJSON()', ->
     it 'should parse JSON from the string', ->
-      ts.string.parseJSON()
+      cure.string.parseJSON()
         .validate '{"state":"hello"}', (err, value) ->
           expect(err).to.be null
           expect(value).to.eql { state: 'hello' }
 
   describe '#includes()', ->
     it 'should test for the inclusion of a sub-string', ->
-      ts.string.includes 'cat'
+      cure.string.includes 'cat'
         .validate 'i like cats', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'i like cats'
@@ -78,7 +78,7 @@ describe 'StringSchema', ->
           expect(value).to.be 'hello'
 
     it 'should test for the inclusion of multiple sub-strings', ->
-      ts.string.includes 'hello', 'there'
+      cure.string.includes 'hello', 'there'
         .validate 'hello there', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'hello there'
@@ -89,7 +89,7 @@ describe 'StringSchema', ->
 
   describe '#minLen()', ->
     it 'should test the length of the string against a minimal length', ->
-      ts.string.minLen 11
+      cure.string.minLen 11
         .validate 'hello world', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'hello world'
@@ -104,7 +104,7 @@ describe 'StringSchema', ->
 
   describe '#maxLen()', ->
     it 'should test the length of the string against a maximal length', ->
-      ts.string.maxLen 11
+      cure.string.maxLen 11
         .validate 'hello world', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'hello world'
@@ -119,7 +119,7 @@ describe 'StringSchema', ->
 
   describe '#len()', ->
     it 'should test the length of the string against a certain length', ->
-      ts.string.len 11
+      cure.string.len 11
         .validate 'hello world', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'hello world'
@@ -134,7 +134,7 @@ describe 'StringSchema', ->
 
   describe '#email()', ->
     it 'should test if the string is an email', ->
-      ts.string.email()
+      cure.string.email()
         .validate 'hello@world.com', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'hello@world.com'
@@ -150,7 +150,7 @@ describe 'StringSchema', ->
   describe '#match()', ->
     it 'should test if the string against a regex', ->
       # From http://net.tutsplus.com/tutorials/other/8-regular-expressions-you-should-know/
-      ts.string.match /^[a-z0-9_-]{3,16}$/  
+      cure.string.match /^[a-z0-9_-]{3,16}$/  
         .validate '-a', (err, value) ->
           expect(err).to.be 'match'
           expect(value).to.be '-a'
