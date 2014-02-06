@@ -47,7 +47,7 @@ AnySchema
   .action 'cast', (type) ->
     @next (type @value)
 
-  .action 'toJSON', ->
+  .action 'toJSON', StringSchema, ->
     @next (JSON.stringify @value)
 
   # Validation
