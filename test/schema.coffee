@@ -72,6 +72,16 @@ describe 'Schema', ->
           expect(err).to.be null
           expect(value).to.be ''
 
+    it 'should not skip subsequent actions', ->
+      new Schema().default('lalala').uppercase()
+        .validate undefined, (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be 'LALALA'
+
+        .validate 'cat', (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be 'CAT'
+
   describe '#not', ->
     it 'should reverse the next action', ->
       # Present/not present is a special case

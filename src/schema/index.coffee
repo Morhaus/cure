@@ -30,12 +30,13 @@ module.exports = class Schema
   validate: (value, callback) ->
     if not value?
       if @_default
-        callback? null, @_default
-      else if @_present is 1
-        callback? 'present', value
+        value = @_default
       else
-        callback null, value
-      return this
+        if @_present is 1
+          callback? 'present', value
+        else
+          callback null, value
+        return this
 
     if value? and @_present is -1
       callback? 'not present', value
