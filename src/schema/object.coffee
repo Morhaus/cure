@@ -16,16 +16,16 @@ ObjectSchema
 
     async.eachSeries (_.keys object), (key, nextKey) =>
       schema = object[key]
-      dirtyNodes = dirty.resolve [key]
-
-      async.eachSeries dirtyNodes, (dirtyNode, nextNode) ->
-        schema.validate dirtyNode.value, (err, newValue) ->
-          if err
-            errors.push { path: dirtyNode.path, error: err, type: schema.constructor.name }
-          else
-            clean.make dirtyNode.path, newValue
-          nextNode()
-      , nextKey
+      nodePath = [key]
+      node = dirty.resolve [key]
+      nodeValue = node?.value or null
+  
+      schema.validate nodeValue, (err, newValue) ->
+        if err
+          errors.push { path: nodePath, error: err, type: schema.constructor.name }
+        else
+          clean.make nodePath, newValue
+        nextKey()
     , =>
       if errors.length > 0
         @fail errors

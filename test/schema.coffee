@@ -53,6 +53,25 @@ describe 'Schema', ->
           expect(err).to.eql 'present'
           expect(value).to.eql null
 
+  describe '#default()', ->
+    it 'should default the value to the specified value', ->
+      new Schema().default 5
+        .validate undefined, (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be 5
+
+        .validate null, (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be 5
+
+        .validate false, (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be false
+
+        .validate '', (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be ''
+
   describe '#not', ->
     it 'should reverse the next action', ->
       # Present/not present is a special case

@@ -26,10 +26,10 @@ module.exports = class Node
 
     return this
 
-  # Returns an array of nodes that match a given path
+  # Returns the node that matches a given path
   resolve: (path) ->
     path = normalizePath path
-    return [@] if path.length is 0
+    return @ if path.length is 0
 
     nodeName = path.shift()
 
@@ -40,7 +40,7 @@ module.exports = class Node
 
     else
       # The target node doesn't exist
-      return []
+      return null
 
   # Builds a node tree along a given path
   make: (path, value) =>

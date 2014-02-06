@@ -12,7 +12,7 @@ module.exports = class Schema
       actions = @actions[..]
       actions.push { name, fn, args, reversed: @_reversed }
       ctor = type or @constructor
-      return (new ctor actions)
+      return (new ctor actions, present: @_present, default: @_default)
 
     return @
 
@@ -58,10 +58,10 @@ module.exports = class Schema
 
   present: ->
     present = if @_reversed then -1 else 1
-    return (new @constructor @actions[..], { present })
+    return (new @constructor @actions[..], { present, default: @_default })
 
   default: (value) ->
-    return (new @constructor @actions[..], { default: value })
+    return (new @constructor @actions[..], { present: @_present, default: value })
 
 Schema.Any = require './any'
 Schema.Object = require './object'

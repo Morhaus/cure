@@ -34,18 +34,25 @@ describe 'Node', ->
       expect(node).not.to.have.property 'value'
 
   describe '#resolve()', ->
-    it 'should resolve an array of nodes from a path', ->
+    it 'should return the node that corresponds to a path', ->
       result = node.resolve 'foo'
-      expect(result).to.have.length 1
-      expect(result[0]).to.eql node.nodes.foo
+      expect(result).to.eql node.nodes.foo
 
       result = node.resolve 'bar.foo'
-      expect(result).to.have.length 1
-      expect(result[0]).to.eql node.nodes.bar.nodes.foo
+      expect(result).to.eql node.nodes.bar.nodes.foo
 
       result = node.resolve 'foobar.foo.bar'
-      expect(result).to.have.length 1
-      expect(result[0]).to.eql node.nodes.foobar.nodes.foo.nodes.bar
+      expect(result).to.eql node.nodes.foobar.nodes.foo.nodes.bar
+
+    it 'should return null if the node doesn\'t exist', ->
+      result = node.resolve 'barfoo'
+      expect(result).to.eql null
+
+      result = node.resolve 'barfoo.bar'
+      expect(result).to.eql null
+
+      result = node.resolve 'bar.foobar'
+      expect(result).to.eql null
 
   describe '#make()', ->
     it 'should build a node tree from a path', ->
