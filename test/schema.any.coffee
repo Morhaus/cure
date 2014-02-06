@@ -2,6 +2,25 @@ expect = require 'expect.js'
 ts = require '../src'
 
 describe 'AnySchema', ->
+  describe '#default()', ->
+    it 'should default the value to the specified value', ->
+      ts.any.default 5
+        .validate undefined, (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be 5
+
+        .validate null, (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be 5
+
+        .validate false, (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be false
+
+        .validate '', (err, value) ->
+          expect(err).to.be null
+          expect(value).to.be ''
+
   describe '#cast()', ->
     it 'should cast the value to the specified type', ->
       ts.any.cast Number

@@ -25,10 +25,16 @@ module.exports = class Schema
       @not = new @constructor @actions[..], reverse: @
 
     @_present = opts.present or 0
+    @_default = opts.default
 
   validate: (value, callback) ->
     if not value?
-      callback? (if @_present is 1 then 'present' else null), value
+      if @_default
+        callback? null, @_default
+      else if @_present is 1
+        callback? 'present', value
+      else
+        callback null, value
       return this
 
     if value? and @_present is -1
@@ -46,13 +52,16 @@ module.exports = class Schema
       [context.next, context.fail] = [context.fail, context.next] if action.reversed
       action.fn.apply context, action.args
     , (err) ->
-      callback? err, value
+      callback? (err or null), value
 
     return this
 
   present: ->
     present = if @_reversed then -1 else 1
     return (new @constructor @actions[..], { present })
+
+  default: (value) ->
+    return (new @constructor @actions[..], { default: value })
 
 Schema.Any = require './any'
 Schema.Object = require './object'
