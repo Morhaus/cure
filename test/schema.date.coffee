@@ -1,14 +1,6 @@
 expect = require 'expect.js'
 cure = require '../src'
 
-# DateSchema
-#   # Validation
-#   .action 'before', (date) ->
-#     if date.getTime() < @value.getTime() then @next() else @fail()
-
-#   .action 'after', (date) ->
-#     if date.getTime() > @value.getTime() then @next() else @fail()
-
 describe 'DateSchema', ->
   describe '#before()', ->
     it 'should test the value against a minimal date', ->
