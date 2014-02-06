@@ -29,7 +29,7 @@ module.exports = class Schema
 
   validate: (value, callback) ->
     if not value?
-      if @_default
+      if @_default?
         value = @_default
       else
         if @_present is 1

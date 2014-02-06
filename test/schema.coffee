@@ -55,14 +55,14 @@ describe 'Schema', ->
 
   describe '#default()', ->
     it 'should default the value to the specified value', ->
-      new Schema().default 5
+      new Schema().default 0
         .validate undefined, (err, value) ->
           expect(err).to.be null
-          expect(value).to.be 5
+          expect(value).to.be 0
 
         .validate null, (err, value) ->
           expect(err).to.be null
-          expect(value).to.be 5
+          expect(value).to.be 0
 
         .validate false, (err, value) ->
           expect(err).to.be null
