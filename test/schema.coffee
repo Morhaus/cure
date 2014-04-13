@@ -53,6 +53,18 @@ describe 'Schema', ->
           expect(err).to.eql 'present'
           expect(value).to.eql null
 
+    it 'should throw the specified error', ->
+      new Schema().present('required')
+        .exec undefined, (err, value) ->
+          expect(err).to.eql 'required'
+          expect(value).to.eql undefined
+
+      new Schema().not.present('do not want')
+        .exec 'hello', (err, value) ->
+          expect(err).to.eql 'do not want'
+          expect(value).to.eql 'hello'
+
+
   describe '#default()', ->
     it 'should default the value to the specified value', ->
       new Schema().default 0
