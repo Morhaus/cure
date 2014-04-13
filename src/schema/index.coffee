@@ -27,7 +27,7 @@ module.exports = class Schema
     @_present = opts.present or 0
     @_default = opts.default
 
-  validate: (value, callback) ->
+  exec: (value, callback) ->
     if not value?
       if @_default?
         value = @_default

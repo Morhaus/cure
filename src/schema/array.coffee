@@ -15,25 +15,27 @@ ArraySchema
     @next (@value.join args...)
 
   # Validation
-  .action 'includes', (values...) ->
+  .action 'includes', (values, err) ->
+    values = [values] unless _.isArray values
     for value in values
       unless (_.contains @value, value)
-        return @fail()
+        return @fail err
 
     @next()
 
-  .action 'excludes', (values...) ->
+  .action 'excludes', (values, err) ->
+    values = [values] unless _.isArray values
     for value in values
       if (_.contains @value, value)
-        return @fail()
+        return @fail err
 
     @next()
 
-  .action 'minLen', (min) ->
-    if @value.length >= min then @next() else @fail()
+  .action 'minLen', (min, err) ->
+    if @value.length >= min then @next() else @fail err
 
-  .action 'maxLen', (max) ->
-    if @value.length <= max then @next() else @fail()
+  .action 'maxLen', (max, err) ->
+    if @value.length <= max then @next() else @fail err
 
-  .action 'len', (len) ->
-    if @value.length is len then @next() else @fail()
+  .action 'len', (len, err) ->
+    if @value.length is len then @next() else @fail err

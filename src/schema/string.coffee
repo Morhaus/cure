@@ -31,29 +31,33 @@ StringSchema
     @next (JSON.parse @value)
 
   # Validation
-  .action 'includes', (values...) ->
-    if (_.contains @value, values...)
-      @next()
-    else
-      @fail()
+  .action 'includes', (values, err) ->
+    values = [values] unless _.isArray values
+    for value in values
+      unless (_.contains @value, value)
+        return @fail err
 
-  .action 'excludes', (val) ->
-    unless (_.contains @value, values...)
-      @next()
-    else
-      @fail()
+    @next()
 
-  .action 'minLen', (min) ->
-    if @value.length >= min then @next() else @fail()
+  .action 'excludes', (values, err) ->
+    values = [values] unless _.isArray values
+    for value in values
+      if (_.contains @value, value)
+        return @fail err
 
-  .action 'maxLen', (max) ->
-    if @value.length <= max then @next() else @fail()
+    @next()
 
-  .action 'len', (len) ->
-    if @value.length is len then @next() else @fail()
+  .action 'minLen', (min, err) ->
+    if @value.length >= min then @next() else @fail err
 
-  .action 'email', ->
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test @value) then @next() else @fail()
+  .action 'maxLen', (max, err) ->
+    if @value.length <= max then @next() else @fail err
 
-  .action 'match', (regex) ->
-    if (regex.test @value) then @next() else @fail()
+  .action 'len', (len, err) ->
+    if @value.length is len then @next() else @fail err
+
+  .action 'email', (err) ->
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test @value) then @next() else @fail err
+
+  .action 'match', (regex, err) ->
+    if (regex.test @value) then @next() else @fail err

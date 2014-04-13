@@ -51,7 +51,7 @@ var userSchema = cure.object.format({
 ## Validating a schema
 
 ```
-nameSchema.validate('__whatever', function(err, value) {
+nameSchema.exec('__whatever', function(err, value) {
   err == 'match';
 });
 ```
@@ -60,7 +60,7 @@ If `err` is defined, it will be the name of the validation that failed.
 
 If no errors are met, `value` contains the sanitized object.
 ```
-nameSchema.validate(' \t validName\n', function(err, value) {
+nameSchema.exec(' \t validName\n', function(err, value) {
   value == 'validName';
 });
 ```
@@ -68,7 +68,7 @@ nameSchema.validate(' \t validName\n', function(err, value) {
 
 If an error is met in the `format` action of `Schema.Object`, `err` is an array of errors met during the validation of the different key/schema pairs. `value` is the untouched input object.
 ```
-userSchema.validate({
+userSchema.exec({
   name: ' Morhaus ',
   email: 'morhaus@google@google.com',
   meta: {
@@ -94,7 +94,7 @@ userSchema.validate({
 
 If no errors are met, `value` contains the sanitized object.
 ```
-userSchema.validate({
+userSchema.exec({
   name: ' Morhaus ',
   email: 'morhaus@google.com',
   ignored: true,
@@ -126,7 +126,7 @@ cure.Schema.String.action('contains', function(str) {
   }
 });
 
-cure.string.contains('test').validate('_test_', function(err, value) {
+cure.string.contains('test').exec('_test_', function(err, value) {
   err == null;
 });
 ```
@@ -135,11 +135,11 @@ An action can return a different `Schema` type than the one it was registered fo
 ```
 cure.Schema.String.action('split', Schema.Array, function(str) {
   // the value passed to this.next() will be passed to every subsequent actions,
-  // and eventually returned by the callback argument of Schema::validate()
+  // and eventually returned by the callback argument of Schema::exec()
   this.next(this.value.split(str));
 });
 
-cure.string.split('.').join(', ').validate('hello.world', function(err, value) {
+cure.string.split('.').join(', ').exec('hello.world', function(err, value) {
   value == 'hello, world';
 });
 ```

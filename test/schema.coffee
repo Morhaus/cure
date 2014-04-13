@@ -15,11 +15,11 @@ describe 'Schema', ->
   describe '#validate()', ->
     it 'should execute validation actions', ->
       new Schema().in ['car', 'boat', 'plane']
-        .validate 'car', (err, value) ->
+        .exec 'car', (err, value) ->
           expect(err).to.eql null
           expect(value).to.eql 'car'
 
-        .validate 'kitty', (err, value) ->
+        .exec 'kitty', (err, value) ->
           expect(err).to.eql 'in'
           expect(value).to.eql 'kitty'
 
@@ -27,58 +27,58 @@ describe 'Schema', ->
       Schema.action 'uppercase', -> @next @value.toUpperCase()
 
       new Schema().uppercase()
-        .validate 'kitty', (err, value) ->
+        .exec 'kitty', (err, value) ->
           expect(err).to.eql null
           expect(value).to.eql 'KITTY'
 
     it 'should execute validation and sanitization actions', ->
       new Schema().uppercase().in ['cat', 'kitten', 'KITTY']
-        .validate 'kitty', (err, value) ->
+        .exec 'kitty', (err, value) ->
           expect(err).to.eql null
           expect(value).to.eql 'KITTY'
 
       new Schema().in(['car', 'boat', 'plane']).uppercase()
-        .validate 'CAR', (err, value) ->
+        .exec 'CAR', (err, value) ->
           expect(err).to.eql 'in'
           expect(value).to.eql 'CAR'
 
   describe '#present()', ->
     it 'should throw an error when passed undefined or null', ->
       new Schema().present()
-        .validate undefined, (err, value) ->
+        .exec undefined, (err, value) ->
           expect(err).to.eql 'present'
           expect(value).to.eql undefined
 
-        .validate null, (err, value) ->
+        .exec null, (err, value) ->
           expect(err).to.eql 'present'
           expect(value).to.eql null
 
   describe '#default()', ->
     it 'should default the value to the specified value', ->
       new Schema().default 0
-        .validate undefined, (err, value) ->
+        .exec undefined, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 0
 
-        .validate null, (err, value) ->
+        .exec null, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 0
 
-        .validate false, (err, value) ->
+        .exec false, (err, value) ->
           expect(err).to.be null
           expect(value).to.be false
 
-        .validate '', (err, value) ->
+        .exec '', (err, value) ->
           expect(err).to.be null
           expect(value).to.be ''
 
     it 'should not skip subsequent actions', ->
       new Schema().default('lalala').uppercase()
-        .validate undefined, (err, value) ->
+        .exec undefined, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'LALALA'
 
-        .validate 'cat', (err, value) ->
+        .exec 'cat', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'CAT'
 
@@ -86,12 +86,12 @@ describe 'Schema', ->
     it 'should reverse the next action', ->
       # Present/not present is a special case
       new Schema().not.present()
-        .validate 1, (err, value) ->
+        .exec 1, (err, value) ->
           expect(err).to.eql 'not present'
           expect(value).to.eql 1
 
       new Schema().not.in ['car', 'boat', 'plane']
-        .validate 'car', (err, value) ->
+        .exec 'car', (err, value) ->
           expect(err).to.eql 'not in'
           expect(value).to.eql 'car'
 

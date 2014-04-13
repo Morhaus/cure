@@ -20,7 +20,7 @@ ObjectSchema
       node = dirty.resolve [key]
       nodeValue = node?.value or null
   
-      schema.validate nodeValue, (err, newValue) ->
+      schema.exec nodeValue, (err, newValue) ->
         if err
           errors.push { path: nodePath, error: err, type: schema.constructor.name }
         else
