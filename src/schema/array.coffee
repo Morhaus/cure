@@ -52,4 +52,4 @@ ArraySchema
 
   # Validation/Sanitization
   .define 'each', (value, [schema], callback) ->
-    async.map value, schema.exec, callback
+    async.map value, schema.run, callback

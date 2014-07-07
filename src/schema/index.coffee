@@ -19,7 +19,7 @@ module.exports = class Schema
 
   constructor: (@_actions = [], @_opts = {}) ->
 
-  run: (initialValue, callback) ->
+  run: (initialValue, callback) =>
     run = (runCallback) =>
       unless initialValue?
         if @_opts.default?
