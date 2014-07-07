@@ -1,5 +1,6 @@
 expect = require 'expect.js'
 Schema = require '../src/schema'
+Promise = require 'bluebird'
 
 describe 'Schema', ->
   describe '.define()', ->
@@ -63,8 +64,8 @@ describe 'Schema', ->
         .catch (err) ->
           expect(err).to.be 'required'
           return
-
-      sc.run '2'
+        .then ->
+          sc.run '2'
         .then (value) ->
           expect(value).to.be '2'
           return
