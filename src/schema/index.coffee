@@ -1,69 +1,73 @@
+Promise = require 'bluebird'
 async = require 'async'
 _ = require 'lodash'
 
 module.exports = class Schema
-  @action: (name, type, fn) ->
-    unless fn
-      fn = type
-      type = null
+  @define: (name, args...) ->
+    if args.length is 1
+      [fn] = args
+    else
+      [type, fn] = args
 
     @::[name] = (args...) ->
-      name = "not #{name}" if @_reversed
-      actions = @actions[..]
-      actions.push { name, fn, args, reversed: @_reversed }
+      actions = @_actions.concat [{name, fn, args}]
+      opts = _.clone @_opts
       ctor = type or @constructor
-      return (new ctor actions, present: @_present, presentErr: @_presentErr, default: @_default)
+      return (new ctor actions, opts)
 
     return @
 
-  constructor: (@actions = [], opts = {}) ->
-    if opts.reverse
-      @_reversed = true
-      @not = opts.reverse
-    else
-      @_reversed = false
-      @not = new @constructor @actions[..], reverse: @
+  constructor: (@_actions = [], @_opts = {}) ->
 
-    @_present = opts.present or 0
-    @_presentErr = opts.presentErr
-    @_default = opts.default
-
-  exec: (value, callback) ->
-    if not value?
-      if @_default?
-        value = @_default
-      else
-        if @_present is 1
-          callback? (@_presentErr or 'present'), value
+  run: (initialValue, callback) ->
+    run = (runCallback) =>
+      unless initialValue?
+        if @_opts.default?
+          runCallback null, @_opts.default
+        else if @_opts.optional
+          runCallback null
         else
-          callback null, value
-        return this
+          runCallback 'required'
+        return
 
-    if value? and @_present is -1
-      callback? (@_presentErr or 'not present'), value
-      return this
+      actionStep = (value, action, next) ->
+        actionCallback = (err, value, skip) ->
+          if err?
+            next err
+          else if skip
+            runCallback null, value
+          else
+            next null, value
 
-    async.eachSeries @actions, (action, nextAction) ->
-      context =
-        value: value
-        next: (newValue) ->
-          value = newValue if newValue?
-          nextAction()
-        fail: (err) ->
-          nextAction (err or action.name)
-      [context.next, context.fail] = [context.fail, context.next] if action.reversed
-      action.fn.apply context, action.args
-    , (err) ->
-      callback? (err or null), value
+        if action.fn.length is 2
+          action.fn value, actionCallback
+        else if action.fn.length is 3
+          action.fn value, action.args, actionCallback
 
-    return this
+      async.reduce @_actions, initialValue, actionStep, runCallback
 
-  present: (presentErr) ->
-    present = if @_reversed then -1 else 1
-    return (new @constructor @actions[..], { present, presentErr, default: @_default })
+    if callback?
+      run callback
+      return @
+    else
+      new Promise (resolve, reject) =>
+        run (err, result) ->
+          if err?
+            reject err
+          else
+            resolve result
 
   default: (value) ->
-    return (new @constructor @actions[..], { present: @_present, presentErr: @_presentErr, default: value })
+    opts = _.clone @_opts
+    actions = _.clone @_actions
+    opts.default = value
+    return new @constructor actions, opts
+
+  optional: ->
+    opts = _.clone @_opts
+    actions = _.clone @_actions
+    opts.optional = yes
+    return new @constructor actions, opts
 
 Schema.Any = require './any'
 Schema.Object = require './object'

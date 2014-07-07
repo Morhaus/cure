@@ -6,8 +6,14 @@ module.exports = class DateSchema extends AnySchema
 
 DateSchema
   # Validation
-  .action 'before', (date, err) ->
-    if @value.getTime() < date.getTime() then @next() else @fail err
+  .define 'before', (value, [date, err], callback) ->
+    if value.getTime() < date.getTime()
+      callback null, value
+    else
+      callback (err or 'before'), value
 
-  .action 'after', (date, err) ->
-    if @value.getTime() > date.getTime() then @next() else @fail err
+  .define 'after', (value, [date, err], callback) ->
+    if value.getTime() > date.getTime()
+      callback null, value
+    else
+      callback (err or 'after'), value

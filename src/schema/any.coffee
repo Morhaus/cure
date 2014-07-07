@@ -5,7 +5,7 @@ Schema = require './'
 module.exports = class AnySchema extends Schema
 
 # From https://github.com/lodash/lodash/issues/391
-_is = (object = @value, against = other) ->
+_is = (object, against) ->
   return false if object is undefined or object is null
   
   if (_.isArray against)
@@ -26,76 +26,102 @@ RegExpSchema = require './regexp'
 
 AnySchema
   # Sanitization
-  .action 'toNumber', NumberSchema, ->
-    @next (Number @value)
+  .define 'toNumber', NumberSchema, (value, callback)->
+    callback null, (Number value)
 
-  .action 'toString', StringSchema, ->
-    @next (String @value)
+  .define 'toString', StringSchema, (value, callback)->
+    callback null, (String value)
 
-  .action 'toBoolean', BooleanSchema, ->
-    @next (Boolean @value)
+  .define 'toBoolean', BooleanSchema, (value, callback)->
+    callback null, (Boolean value)
 
-  .action 'toArray', ArraySchema, ->
-    @next (Array::slice.call @value)
+  .define 'toArray', ArraySchema, (value, callback)->
+    callback null, (Array::slice.call value)
 
-  .action 'toDate', DateSchema, ->
-    @next (Date @value)
+  .define 'toDate', DateSchema, (value, callback)->
+    callback null, (Date value)
 
-  .action 'toRegExp', RegExpSchema, ->
-    @next (RegExp @value)
+  .define 'toRegExp', RegExpSchema, (value, callback)->
+    callback null, (RegExp value)
 
-  .action 'cast', (type) ->
-    @next (type @value)
+  .define 'cast', (value, [type], callback) ->
+    callback null, (type value)
 
-  .action 'toJSON', StringSchema, ->
-    @next (JSON.stringify @value)
+  # Validation/Sanitization
+  .define 'toJSON', StringSchema, (value, callback) ->
+    try
+      json = JSON.stringify value
+      callback null, json
+    catch e
+      callback e, value
 
   # Validation
-  .action 'in', (array) ->
-    return @next() for value in array when (_.isEqual @value, value)
-    @fail()
-
-  .action 'strictIn', (array) ->
-    if (_.indexOf array, @value) isnt -1 then @next() else @fail()
-
-  .action 'equals', (value) ->
-    if (_.isEqual @value, value) then @next() else @fail()
-
-  .action 'strictEquals', (value) ->
-    if @value is value then @next() else @fail()
-
-  .action 'empty', ->
-    if (_.isEmpty @value) then @next() else @fail()
-
-  .action 'type', (type) ->
-    if (_is @value, type)
-      @next()
+  .define 'in', (value, [array, err], callback) ->
+    if (array.indexOf value) isnt -1
+      callback null, value
     else
-      @fail()
+      callback (err or 'in'), value
 
-  .action 'gt', (other) ->
-    if @value > other
-      @next()
+  .define 'strictEquals', (value, [other, err], callback) ->
+    if value is other
+      callback null, value
     else
-      @fail()
+      callback (err or 'strictEquals'), value
 
-  .action 'gte', (other) ->
-    if @value >= other
-      @next()
+  .define 'is', (value, [type, err], callback) ->
+    if (_is value, type)
+      callback null, value
     else
-      @fail()
+      callback (err or 'is'), value
 
-  .action 'lt', (other) ->
-    if @value < other
-      @next()
+  .define 'isnt', (value, [type, err], callback) ->
+    unless (_is value, type)
+      callback null, value
     else
-      @fail()
+      callback (err or 'isnt'), value
 
-  .action 'lte', (other) ->
-    if @value <= other
-      @next()
+  .define 'gt', (value, [other, err], callback) ->
+    if value > other
+      callback null, value
     else
-      @fail()
+      callback (err or 'gt'), value
 
-  .action 'action', (fn) ->
-    fn.call this
+  .define 'gte', (value, [other, err], callback) ->
+    if value >= other
+      callback null, value
+    else
+      callback (err or 'gte'), value
+
+  .define 'lt', (value, [other, err], callback) ->
+    if value < other
+      callback null, value
+    else
+      callback (err or 'lt'), value
+
+  .define 'lte', (value, [other, err], callback) ->
+    if value <= other
+      callback null, value
+    else
+      callback (err or 'lte'), value
+
+  .define 'action', (value, [fn], callback) ->
+    fn value, callback
+
+  # Mirror lodash
+  .define 'equals', (value, [other, err], callback) ->
+    if (_.isEqual value, other)
+      callback null, value
+    else
+      callback (err or 'equals'), value
+
+  .define 'empty', (value, [err], callback) ->
+    if (_.isEmpty value)
+      callback null, value
+    else
+      callback (err or 'empty'), value
+
+  .define 'notEmpty', (value, [err], callback) ->
+    unless (_.isEmpty value)
+      callback null, value
+    else
+      callback (err or 'notEmpty'), value

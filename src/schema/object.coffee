@@ -1,35 +1,27 @@
 _ = require 'lodash'
 async = require 'async'
 
-Node = require '../node'
 AnySchema = require './any'
 
 class ObjectSchema extends AnySchema
 
 ObjectSchema
   # Validation/Sanitization
-  .action 'format', (object) ->
+  .define 'format', (value, [schemas], callback) ->
     errors = []
+    formatted = {}
 
-    dirty = new Node().setup @value
-    clean = new Node().setup {}
-
-    async.eachSeries (_.keys object), (key, nextKey) =>
-      schema = object[key]
-      nodePath = [key]
-      node = dirty.resolve [key]
-      nodeValue = node?.value or null
-  
-      schema.exec nodeValue, (err, newValue) ->
+    async.eachSeries (_.keys schemas), (key, next) ->
+      schemas[key].run value[key], (err, newValue) ->
         if err
-          errors.push { path: nodePath, error: err, type: schema.constructor.name }
+          errors.push {key, err}
         else
-          clean.make nodePath, newValue
-        nextKey()
-    , =>
+          formatted[key] = newValue
+        next()
+    , ->
       if errors.length > 0
-        @fail errors
+        callback errors, value
       else
-        @next clean.build()
+        callback null, formatted
 
 module.exports = ObjectSchema

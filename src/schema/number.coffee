@@ -6,11 +6,20 @@ module.exports = class NumberSchema extends AnySchema
 
 NumberSchema
   # Validation
-  .action 'min', (min, err) ->
-    if @value >= min then @next() else @fail err
+  .define 'min', (value, [min, err], callback) ->
+    if value >= min
+      callback null, value
+    else
+      callback (err or 'min'), value
 
-  .action 'max', (max, err) ->
-    if @value <= max then @next() else @fail err
+  .define 'max', (value, [max, err], callback) ->
+    if value <= max
+      callback null, value
+    else
+      callback (err or 'max'), value
 
-  .action 'int', (err) ->
-    if @value % 1 is 0 then @next() else @fail err
+  .define 'int', (value, [err], callback) ->
+    if value % 1 is 0
+      callback null, value
+    else
+      callback (err or 'int'), value

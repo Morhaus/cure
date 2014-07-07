@@ -5,62 +5,46 @@ describe 'AnySchema', ->
   describe '#cast()', ->
     it 'should cast the value to the specified type', ->
       cure.any.cast Number
-        .exec '5', (err, value) ->
+        .run '5', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 5
 
-        .exec '5.65', (err, value) ->
+        .run '5.65', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 5.65
 
   describe '#toJSON()', ->
     it 'should format the value to JSON', ->
       cure.any.toJSON()
-        .exec 'test', (err, value) ->
+        .run 'test', (err, value) ->
           expect(err).to.be null
           expect(value).to.be '"test"'
 
-        .exec { toast: 'test' }, (err, value) ->
+        .run { toast: 'test' }, (err, value) ->
           expect(err).to.be null
           expect(value).to.be '{"toast":"test"}'
 
   describe '#in()', ->
     it 'should test if the value is in the supplied array', ->
       cure.any.in ['toast', 'test', 'pony']
-        .exec 'toast', (err, value) ->
+        .run 'toast', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'toast'
 
-        .exec 'kitty cat', (err, value) ->
+        .run 'kitty cat', (err, value) ->
           expect(err).to.be 'in'
-          expect(value).to.be 'kitty cat'
-
-  describe '#strictIn()', ->
-    it 'should test if the value is in the supplied array via an identity check', ->
-      kitty = new Object
-      toast = new Object
-      pony = new Object
-      test = new Object
-
-      cure.any.strictIn [kitty, toast, pony]
-        .exec toast, (err, value) ->
-          expect(err).to.be null
-          expect(value).to.be toast
-
-        .exec test, (err, value) ->
-          expect(err).to.be 'strictIn'
-          expect(value).to.be test
+          expect(value).to.be undefined
 
   describe '#equals()', ->
     it 'should test if the value corresponds to the supplied value', ->
       cure.any.equals 4
-        .exec 4, (err, value) ->
+        .run 4, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 4
 
-        .exec 5, (err, value) ->
+        .run 5, (err, value) ->
           expect(err).to.be 'equals'
-          expect(value).to.be 5
+          expect(value).to.be undefined
 
   describe '#strictEquals()', ->
     it 'should test if the value corresponds to the supplied value via an identity check', ->
@@ -68,217 +52,217 @@ describe 'AnySchema', ->
       toast = new Object
 
       cure.any.strictEquals kitty
-        .exec kitty, (err, value) ->
+        .run kitty, (err, value) ->
           expect(err).to.be null
           expect(value).to.be kitty
 
-        .exec toast, (err, value) ->
+        .run toast, (err, value) ->
           expect(err).to.be 'strictEquals'
-          expect(value).to.be toast
+          expect(value).to.be undefined
 
   describe '#empty()', ->
     it 'should test if the value is empty', ->
       cure.any.empty()
-        .exec '', (err, value) ->
+        .run '', (err, value) ->
           expect(err).to.be null
           expect(value).to.be ''
 
-        .exec [], (err, value) ->
+        .run [], (err, value) ->
           expect(err).to.be null
           expect(value).to.eql []
 
-        .exec {}, (err, value) ->
+        .run {}, (err, value) ->
           expect(err).to.be null
           expect(value).to.eql {}
 
-        .exec 'hello', (err, value) ->
+        .run 'hello', (err, value) ->
           expect(err).to.be 'empty'
-          expect(value).to.be 'hello'
+          expect(value).to.be undefined
 
-        .exec ['hello'], (err, value) ->
+        .run ['hello'], (err, value) ->
           expect(err).to.be 'empty'
-          expect(value).to.eql ['hello']
+          expect(value).to.be undefined
 
-        .exec { hello: 'there' }, (err, value) ->
+        .run { hello: 'there' }, (err, value) ->
           expect(err).to.be 'empty'
-          expect(value).to.eql { hello: 'there' }
+          expect(value).to.be undefined
 
-  describe '#type()', ->
+  describe '#is()', ->
     it 'should test the type of the value against a given type', ->
-      cure.any.type String
-        .exec '', (err, value) ->
+      cure.any.is String
+        .run '', (err, value) ->
           expect(err).to.be null
           expect(value).to.be ''
 
-        .exec [], (err, value) ->
-          expect(err).to.be 'type'
-          expect(value).to.eql []
+        .run [], (err, value) ->
+          expect(err).to.be 'is'
+          expect(value).to.be undefined
 
-      cure.any.type Array
-        .exec '', (err, value) ->
-          expect(err).to.be 'type'
-          expect(value).to.be ''
+      cure.any.is Array
+        .run '', (err, value) ->
+          expect(err).to.be 'is'
+          expect(value).to.be undefined
 
-        .exec [], (err, value) ->
+        .run [], (err, value) ->
           expect(err).to.be null
           expect(value).to.eql []
 
   describe '#gt()', ->
     it 'should check if the value is greater than a given value', ->
       cure.any.gt 5
-        .exec '4', (err, value) ->
+        .run '4', (err, value) ->
           expect(err).to.be 'gt'
-          expect(value).to.be '4'
+          expect(value).to.be undefined
 
-        .exec 4, (err, value) ->
+        .run 4, (err, value) ->
           expect(err).to.be 'gt'
-          expect(value).to.be 4
+          expect(value).to.be undefined
 
-        .exec 5, (err, value) ->
+        .run 5, (err, value) ->
           expect(err).to.be 'gt'
-          expect(value).to.be 5
+          expect(value).to.be undefined
 
-        .exec 6, (err, value) ->
+        .run 6, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 6
 
-        .exec '6', (err, value) ->
+        .run '6', (err, value) ->
           expect(err).to.be null
           expect(value).to.be '6'
 
       cure.any.gt 'e'
-        .exec 'a', (err, value) ->
+        .run 'a', (err, value) ->
           expect(err).to.be 'gt'
-          expect(value).to.be 'a'
+          expect(value).to.be undefined
 
-        .exec 'e', (err, value) ->
+        .run 'e', (err, value) ->
           expect(err).to.be 'gt'
-          expect(value).to.be 'e'
+          expect(value).to.be undefined
 
-        .exec 'g', (err, value) ->
+        .run 'g', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'g'
 
   describe '#gte()', ->
     it 'should check if the value is greater than or equal to a given value', ->
       cure.any.gte 5
-        .exec '4', (err, value) ->
+        .run '4', (err, value) ->
           expect(err).to.be 'gte'
-          expect(value).to.be '4'
+          expect(value).to.be undefined
 
-        .exec 4, (err, value) ->
+        .run 4, (err, value) ->
           expect(err).to.be 'gte'
-          expect(value).to.be 4
+          expect(value).to.be undefined
 
-        .exec 5, (err, value) ->
+        .run 5, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 5
 
-        .exec 6, (err, value) ->
+        .run 6, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 6
 
-        .exec '6', (err, value) ->
+        .run '6', (err, value) ->
           expect(err).to.be null
           expect(value).to.be '6'
 
       cure.any.gte 'e'
-        .exec 'a', (err, value) ->
+        .run 'a', (err, value) ->
           expect(err).to.be 'gte'
-          expect(value).to.be 'a'
+          expect(value).to.be undefined
 
-        .exec 'e', (err, value) ->
+        .run 'e', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'e'
 
-        .exec 'g', (err, value) ->
+        .run 'g', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'g'
 
   describe '#lt()', ->
     it 'should check if the value is less than a given value', ->
       cure.any.lt 5
-        .exec '4', (err, value) ->
+        .run '4', (err, value) ->
           expect(err).to.be null
           expect(value).to.be '4'
 
-        .exec 4, (err, value) ->
+        .run 4, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 4
 
-        .exec 5, (err, value) ->
+        .run 5, (err, value) ->
           expect(err).to.be 'lt'
-          expect(value).to.be 5
+          expect(value).to.be undefined
 
-        .exec 6, (err, value) ->
+        .run 6, (err, value) ->
           expect(err).to.be 'lt'
-          expect(value).to.be 6
+          expect(value).to.be undefined
 
-        .exec '6', (err, value) ->
+        .run '6', (err, value) ->
           expect(err).to.be 'lt'
-          expect(value).to.be '6'
+          expect(value).to.be undefined
 
       cure.any.lt 'e'
-        .exec 'a', (err, value) ->
+        .run 'a', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'a'
 
-        .exec 'e', (err, value) ->
+        .run 'e', (err, value) ->
           expect(err).to.be 'lt'
-          expect(value).to.be 'e'
+          expect(value).to.be undefined
 
-        .exec 'g', (err, value) ->
+        .run 'g', (err, value) ->
           expect(err).to.be 'lt'
-          expect(value).to.be 'g'
+          expect(value).to.be undefined
 
   describe '#lte()', ->
     it 'should check if the value is less than a given value', ->
       cure.any.lte 5
-        .exec '4', (err, value) ->
+        .run '4', (err, value) ->
           expect(err).to.be null
           expect(value).to.be '4'
 
-        .exec 4, (err, value) ->
+        .run 4, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 4
 
-        .exec 5, (err, value) ->
+        .run 5, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 5
 
-        .exec 6, (err, value) ->
+        .run 6, (err, value) ->
           expect(err).to.be 'lte'
-          expect(value).to.be 6
+          expect(value).to.be undefined
 
-        .exec '6', (err, value) ->
+        .run '6', (err, value) ->
           expect(err).to.be 'lte'
-          expect(value).to.be '6'
+          expect(value).to.be undefined
 
       cure.any.lte 'e'
-        .exec 'a', (err, value) ->
+        .run 'a', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'a'
 
-        .exec 'e', (err, value) ->
+        .run 'e', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'e'
 
-        .exec 'g', (err, value) ->
+        .run 'g', (err, value) ->
           expect(err).to.be 'lte'
-          expect(value).to.be 'g'
+          expect(value).to.be undefined
 
   describe '#action()', ->
-    it 'should execute an action on the value', ->
-      cure.any.action -> @next ['hello', @value]
-        .exec 'you', (err, value) ->
+    it 'should run an action on the value', ->
+      cure.any.action (value, callback) -> callback null, ['hello', value]
+        .run 'you', (err, value) ->
           expect(err).to.be null
           expect(value).to.eql ['hello', 'you']
 
-      cure.any.action -> if @value is 'cat' then (@next "kitty #{@value}") else (@fail 'sad face :(')
-        .exec 'cat', (err, value) ->
+      cure.any.action (value, callback) -> if value is 'cat' then (callback null, "kitty #{value}") else (callback 'sad face :(', value)
+        .run 'cat', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'kitty cat'
 
-        .exec 'pony', (err, value) ->
+        .run 'pony', (err, value) ->
           expect(err).to.be 'sad face :('
-          expect(value).to.be 'pony'
+          expect(value).to.be undefined

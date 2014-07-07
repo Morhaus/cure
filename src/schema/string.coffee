@@ -9,55 +9,76 @@ ObjectSchema = require './object'
 
 StringSchema
   # Sanitization
-  .action 'split', ArraySchema, (args...) ->
-    @next @value.split args...
+  .define 'split', ArraySchema, (value, args, callback) ->
+    callback null, (value.split args...)
 
-  .action 'append', (str) ->
-    @next @value + str
+  .define 'append', (value, [str], callback) ->
+    callback null, value + str
 
-  .action 'prepend', (str) ->
-    @next str + @value
+  .define 'prepend', (value, [str], callback) ->
+    callback null, str + value
 
-  .action 'surround', (str) ->
-    @next str + @value + str
+  .define 'surround', (value, [str], callback) ->
+    callback null, str + value + str
 
-  .action 'trim', ->
+  .define 'trim', (value, callback) ->
     if String::trim
-      @next @value.trim()
+      callback null, value.trim()
     else
-      @next (@value.replace /^\s+|\s+$/gm, '')
+      callback null, (value.replace /^\s+|\s+$/gm, '')
 
-  .action 'parseJSON', ObjectSchema, ->
-    @next (JSON.parse @value)
+  .define 'uppercase', (value, callback) ->
+    callback null, value.toUpperCase()
+
+  .define 'lowercase', (value, callback) ->
+    callback null, value.toLowerCase()
+
+  .define 'parseJSON', ObjectSchema, (value, callback) ->
+    callback null, (JSON.parse value)
 
   # Validation
-  .action 'includes', (values, err) ->
-    values = [values] unless _.isArray values
-    for value in values
-      unless (_.contains @value, value)
-        return @fail err
+  .define 'includes', (value, [strs, err], callback) ->
+    strs = [strs] unless (_.isArray strs)
+    for str in strs
+      unless (_.contains value, str)
+        return callback (err or 'includes'), value
 
-    @next()
+    callback null, value
 
-  .action 'excludes', (values, err) ->
-    values = [values] unless _.isArray values
-    for value in values
-      if (_.contains @value, value)
-        return @fail err
+  .define 'excludes', (value, [strs, err], callback) ->
+    strs = [strs] unless (_.isArray strs)
+    for str in strs
+      if (_.contains value, str)
+        return callback (err or 'excludes'), value
 
-    @next()
+    callback null, value
 
-  .action 'minLen', (min, err) ->
-    if @value.length >= min then @next() else @fail err
+  .define 'minLen', (value, [min, err], callback) ->
+    if value.length >= min
+      callback null, value
+    else
+      callback (err or 'minLen'), value
 
-  .action 'maxLen', (max, err) ->
-    if @value.length <= max then @next() else @fail err
+  .define 'maxLen', (value, [max, err], callback) ->
+    if value.length <= max
+      callback null, value
+    else
+      callback (err or 'maxLen'), value
 
-  .action 'len', (len, err) ->
-    if @value.length is len then @next() else @fail err
+  .define 'len', (value, [len, err], callback) ->
+    if value.length is len
+      callback null, value
+    else
+      callback (err or 'len'), value
 
-  .action 'email', (err) ->
-    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test @value) then @next() else @fail err
+  .define 'email', (value, [err], callback) ->
+    if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test value)
+      callback null, value
+    else
+      callback (err or 'email'), value
 
-  .action 'match', (regex, err) ->
-    if (regex.test @value) then @next() else @fail err
+  .define 'matches', (value, [regex, err], callback) ->
+    if (regex.test value)
+      callback null, value
+    else
+      callback (err or 'matches'), value

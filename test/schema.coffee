@@ -2,108 +2,109 @@ expect = require 'expect.js'
 Schema = require '../src/schema'
 
 describe 'Schema', ->
-  describe '.action()', ->
-    it 'should register an action', ->
-      Schema.action 'in', (array) -> if (array.indexOf @value) isnt -1 then @next() else @fail()
+  describe '.define()', ->
+    it 'should register an define', ->
+      Schema.define 'in', (value, [array, err], callback) ->
+        if (array.indexOf value) isnt -1
+          callback null, value
+        else
+          callback (err or 'in'), value
+
       expect(Schema.prototype.in).to.be.a 'function'
 
     it 'should switch schema type', ->
-      Schema.action 'join', Schema.String, -> @next (@value.join '')
+      Schema.define 'join', Schema.String, (value, args, callback) ->
+        callback null, (value.join args...)
+
       expect(Schema.prototype.join).to.be.a 'function'
       expect(new Schema().join()).to.be.a Schema.String
 
-  describe '#validate()', ->
-    it 'should execute validation actions', ->
+  describe '#run()', ->
+    it 'should run validation actions', ->
       new Schema().in ['car', 'boat', 'plane']
-        .exec 'car', (err, value) ->
+        .run 'car', (err, value) ->
           expect(err).to.eql null
           expect(value).to.eql 'car'
 
-        .exec 'kitty', (err, value) ->
+        .run 'kitty', (err, value) ->
           expect(err).to.eql 'in'
-          expect(value).to.eql 'kitty'
+          expect(value).to.eql undefined
 
-    it 'should execute sanitization actions', ->
-      Schema.action 'uppercase', -> @next @value.toUpperCase()
+    it 'should run sanitization actions', ->
+      Schema.define 'uppercase', (value, callback) ->
+        callback null, value.toUpperCase()
 
       new Schema().uppercase()
-        .exec 'kitty', (err, value) ->
+        .run 'kitty', (err, value) ->
           expect(err).to.eql null
           expect(value).to.eql 'KITTY'
 
-    it 'should execute validation and sanitization actions', ->
+    it 'should run validation and sanitization actions', ->
       new Schema().uppercase().in ['cat', 'kitten', 'KITTY']
-        .exec 'kitty', (err, value) ->
+        .run 'kitty', (err, value) ->
           expect(err).to.eql null
           expect(value).to.eql 'KITTY'
 
       new Schema().in(['car', 'boat', 'plane']).uppercase()
-        .exec 'CAR', (err, value) ->
+        .run 'CAR', (err, value) ->
           expect(err).to.eql 'in'
-          expect(value).to.eql 'CAR'
-
-  describe '#present()', ->
-    it 'should throw an error when passed undefined or null', ->
-      new Schema().present()
-        .exec undefined, (err, value) ->
-          expect(err).to.eql 'present'
           expect(value).to.eql undefined
 
-        .exec null, (err, value) ->
-          expect(err).to.eql 'present'
-          expect(value).to.eql null
-
-    it 'should throw the specified error', ->
-      new Schema().present('required')
-        .exec undefined, (err, value) ->
+    it 'should throw an error when the initial value is absent', ->
+      new Schema()
+        .run null, (err, value) ->
           expect(err).to.eql 'required'
           expect(value).to.eql undefined
 
-      new Schema().not.present('do not want')
-        .exec 'hello', (err, value) ->
-          expect(err).to.eql 'do not want'
-          expect(value).to.eql 'hello'
+    it 'should return a Promise when the callback parameter is absent', ->
+      sc = new Schema().in(['1', '2'])
+      
+      sc.run null
+        .catch (err) ->
+          expect(err).to.be 'required'
+          return
 
+      sc.run '2'
+        .then (value) ->
+          expect(value).to.be '2'
+          return
+
+  describe '#optional()', ->
+    it 'should skip subsequent actions when the initial value is absent', ->
+      new Schema().optional().in ['what']
+        .run undefined, (err, value) ->
+          expect(err).to.eql null
+          expect(value).to.eql undefined
+
+        .run null, (err, value) ->
+          expect(err).to.eql null
+          expect(value).to.eql undefined
 
   describe '#default()', ->
     it 'should default the value to the specified value', ->
       new Schema().default 0
-        .exec undefined, (err, value) ->
+        .run undefined, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 0
 
-        .exec null, (err, value) ->
+        .run null, (err, value) ->
           expect(err).to.be null
           expect(value).to.be 0
 
-        .exec false, (err, value) ->
-          expect(err).to.be null
+        .run false, (err, value) ->
+          expect(err).to.be undefined
           expect(value).to.be false
 
-        .exec '', (err, value) ->
-          expect(err).to.be null
+        .run '', (err, value) ->
+          expect(err).to.be undefined
           expect(value).to.be ''
 
-    it 'should not skip subsequent actions', ->
+    it 'should skip subsequent actions', ->
       new Schema().default('lalala').uppercase()
-        .exec undefined, (err, value) ->
+        .run undefined, (err, value) ->
           expect(err).to.be null
-          expect(value).to.be 'LALALA'
+          expect(value).to.be 'lalala'
 
-        .exec 'cat', (err, value) ->
+        .run 'cat', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'CAT'
-
-  describe '#not', ->
-    it 'should reverse the next action', ->
-      # Present/not present is a special case
-      new Schema().not.present()
-        .exec 1, (err, value) ->
-          expect(err).to.eql 'not present'
-          expect(value).to.eql 1
-
-      new Schema().not.in ['car', 'boat', 'plane']
-        .exec 'car', (err, value) ->
-          expect(err).to.eql 'not in'
-          expect(value).to.eql 'car'
-
