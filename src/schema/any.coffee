@@ -56,72 +56,72 @@ AnySchema
       callback e, value
 
   # Validation
-  .define 'in', (value, [array, err], callback) ->
+  .define 'in', (value, [array], callback) ->
     if (array.indexOf value) isnt -1
       callback null, value
     else
-      callback (err or 'in'), value
+      callback yes
 
-  .define 'strictEquals', (value, [other, err], callback) ->
+  .define 'strictEquals', (value, [other], callback) ->
     if value is other
       callback null, value
     else
-      callback (err or 'strictEquals'), value
+      callback yes
 
-  .define 'is', (value, [type, err], callback) ->
+  .define 'is', (value, [type], callback) ->
     if (_is value, type)
       callback null, value
     else
-      callback (err or 'is'), value
+      callback yes
 
-  .define 'isnt', (value, [type, err], callback) ->
+  .define 'isnt', (value, [type], callback) ->
     unless (_is value, type)
       callback null, value
     else
-      callback (err or 'isnt'), value
+      callback yes
 
-  .define 'gt', (value, [other, err], callback) ->
+  .define 'gt', (value, [other], callback) ->
     if value > other
       callback null, value
     else
-      callback (err or 'gt'), value
+      callback yes
 
-  .define 'gte', (value, [other, err], callback) ->
+  .define 'gte', (value, [other], callback) ->
     if value >= other
       callback null, value
     else
-      callback (err or 'gte'), value
+      callback yes
 
-  .define 'lt', (value, [other, err], callback) ->
+  .define 'lt', (value, [other], callback) ->
     if value < other
       callback null, value
     else
-      callback (err or 'lt'), value
+      callback yes
 
-  .define 'lte', (value, [other, err], callback) ->
+  .define 'lte', (value, [other], callback) ->
     if value <= other
       callback null, value
     else
-      callback (err or 'lte'), value
+      callback yes
 
   .define 'action', (value, [fn], callback) ->
     fn value, callback
 
   # Mirror lodash
-  .define 'equals', (value, [other, err], callback) ->
+  .define 'equals', (value, [other], callback) ->
     if (_.isEqual value, other)
       callback null, value
     else
-      callback (err or 'equals'), value
+      callback yes
 
-  .define 'empty', (value, [err], callback) ->
+  .define 'empty', (value, callback) ->
     if (_.isEmpty value)
       callback null, value
     else
-      callback (err or 'empty'), value
+      callback yes
 
-  .define 'notEmpty', (value, [err], callback) ->
+  .define 'notEmpty', (value, callback) ->
     unless (_.isEmpty value)
       callback null, value
     else
-      callback (err or 'notEmpty'), value
+      callback yes

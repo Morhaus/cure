@@ -28,7 +28,7 @@ describe 'Schema', ->
           expect(value).to.eql 'car'
 
         .run 'kitty', (err, value) ->
-          expect(err).to.eql 'in'
+          expect(err.message).to.be 'in'
           expect(value).to.eql undefined
 
     it 'should run sanitization actions', ->
@@ -48,13 +48,13 @@ describe 'Schema', ->
 
       new Schema().in(['car', 'boat', 'plane']).uppercase()
         .run 'CAR', (err, value) ->
-          expect(err).to.eql 'in'
+          expect(err.message).to.be 'in'
           expect(value).to.eql undefined
 
     it 'should throw an error when the initial value is absent', ->
       new Schema()
         .run null, (err, value) ->
-          expect(err).to.eql 'required'
+          expect(err.message).to.be 'required'
           expect(value).to.eql undefined
 
     it 'should return a Promise when the callback parameter is absent', ->
@@ -62,7 +62,7 @@ describe 'Schema', ->
       
       sc.run null
         .catch (err) ->
-          expect(err).to.be 'required'
+          expect(err.message).to.be 'required'
           return
         .then ->
           sc.run '2'

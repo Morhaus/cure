@@ -17,7 +17,7 @@ describe 'ArraySchema', ->
           expect(value).to.eql ['dragon', 'dog', 'cat']
 
         .run ['dog', 'lizard'], (err, value) ->
-          expect(err).to.be 'includes'
+          expect(err.message).to.be 'includes'
           expect(value).to.be undefined
 
     it 'should test if the array includes multiple values', ->
@@ -31,14 +31,14 @@ describe 'ArraySchema', ->
           expect(value).to.eql ['dog', 'lizard', 'cat']
 
         .run ['dog', 'lizard', 'dragon'], (err, value) ->
-          expect(err).to.be 'includes'
+          expect(err.message).to.be 'includes'
           expect(value).to.be undefined
 
   describe '#excludes()', ->
     it 'should test if the array excludes a value', ->
       cr.array.excludes 'cat'
         .run ['dragon', 'dog', 'cat'], (err, value) ->
-          expect(err).to.be 'excludes'
+          expect(err.message).to.be 'excludes'
           expect(value).to.be undefined
 
         .run ['dog', 'lizard'], (err, value) ->
@@ -48,15 +48,15 @@ describe 'ArraySchema', ->
     it 'should test if the array excludes multiple values', ->
       cr.array.excludes ['cat', 'dog']
         .run ['dog', 'cat', 'cameleon'], (err, value) ->
-          expect(err).to.be 'excludes'
+          expect(err.message).to.be 'excludes'
           expect(value).to.be undefined
 
         .run ['dog', 'lizard', 'cat'], (err, value) ->
-          expect(err).to.be 'excludes'
+          expect(err.message).to.be 'excludes'
           expect(value).to.be undefined
 
         .run ['dog', 'lizard', 'dragon'], (err, value) ->
-          expect(err).to.be 'excludes'
+          expect(err.message).to.be 'excludes'
           expect(value).to.be undefined
 
         .run ['pony', 'lizard', 'dragon'], (err, value) ->
@@ -67,7 +67,7 @@ describe 'ArraySchema', ->
     it 'should test the length of the array against a minimal length', ->
       cr.array.minLen 4
         .run [1, 2, 3], (err, value) ->
-          expect(err).to.be 'minLen'
+          expect(err.message).to.be 'minLen'
           expect(value).to.be undefined
 
         .run [1, 2, 3, 4], (err, value) ->
@@ -90,14 +90,14 @@ describe 'ArraySchema', ->
           expect(value).to.eql [1, 2, 3, 4]
 
         .run [1, 2, 3, 4, 5], (err, value) ->
-          expect(err).to.be 'maxLen'
+          expect(err.message).to.be 'maxLen'
           expect(value).to.be undefined
 
   describe '#len()', ->
     it 'should test the length of the array against a given length', ->
       cr.array.len 4
         .run [1, 2, 3], (err, value) ->
-          expect(err).to.be 'len'
+          expect(err.message).to.be 'len'
           expect(value).to.be undefined
 
         .run [1, 2, 3, 4], (err, value) ->
@@ -105,7 +105,7 @@ describe 'ArraySchema', ->
           expect(value).to.eql [1, 2, 3, 4]
 
         .run [1, 2, 3, 4, 5], (err, value) ->
-          expect(err).to.be 'len'
+          expect(err.message).to.be 'len'
           expect(value).to.be undefined
 
   describe '#each()', ->
@@ -116,5 +116,5 @@ describe 'ArraySchema', ->
           expect(value).to.eql [1, 2]
 
         .run ['1', '2', '3'], (err, value) ->
-          expect(err).to.be 'in'
+          expect(err.message).to.be 'in'
           expect(value).to.be undefined

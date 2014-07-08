@@ -19,3 +19,5 @@ exports.regexp = new Schema.RegExp().is RegExp
 exports.function = new Schema.Function().is Function
 
 exports.Schema = Schema
+
+exports.Error = require './error'

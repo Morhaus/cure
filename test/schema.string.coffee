@@ -74,7 +74,7 @@ describe 'StringSchema', ->
           expect(value).to.be 'i like cats'
 
         .run 'hello', (err, value) ->
-          expect(err).to.be 'includes'
+          expect(err.message).to.be 'includes'
           expect(value).to.be undefined
 
     it 'should test for the inclusion of multiple sub-strings', ->
@@ -84,14 +84,14 @@ describe 'StringSchema', ->
           expect(value).to.be 'hello there'
 
         .run 'hi there', (err, value) ->
-          expect(err).to.be 'includes'
+          expect(err.message).to.be 'includes'
           expect(value).to.be undefined
 
   describe '#excludes()', ->
     it 'should test for the exclusion of a sub-string', ->
       cure.string.excludes 'cat'
         .run 'i like cats', (err, value) ->
-          expect(err).to.be 'excludes'
+          expect(err.message).to.be 'excludes'
           expect(value).to.be undefined
 
         .run 'hello', (err, value) ->
@@ -101,7 +101,7 @@ describe 'StringSchema', ->
     it 'should test for the exclusion of multiple sub-strings', ->
       cure.string.excludes ['hello', 'there']
         .run 'what there', (err, value) ->
-          expect(err).to.be 'excludes'
+          expect(err.message).to.be 'excludes'
           expect(value).to.be undefined
 
         .run 'hi you', (err, value) ->
@@ -109,7 +109,7 @@ describe 'StringSchema', ->
           expect(value).to.be 'hi you'
 
         .run 'hi hello', (err, value) ->
-          expect(err).to.be 'excludes'
+          expect(err.message).to.be 'excludes'
           expect(value).to.be undefined
 
   describe '#minLen()', ->
@@ -124,7 +124,7 @@ describe 'StringSchema', ->
           expect(value).to.be 'hello worlds'
 
         .run 'hello', (err, value) ->
-          expect(err).to.be 'minLen'
+          expect(err.message).to.be 'minLen'
           expect(value).to.be undefined
 
   describe '#maxLen()', ->
@@ -135,7 +135,7 @@ describe 'StringSchema', ->
           expect(value).to.be 'hello world'
 
         .run 'hello worlds', (err, value) ->
-          expect(err).to.be 'maxLen'
+          expect(err.message).to.be 'maxLen'
           expect(value).to.be undefined
 
         .run 'hello', (err, value) ->
@@ -150,11 +150,11 @@ describe 'StringSchema', ->
           expect(value).to.be 'hello world'
 
         .run 'hello worlds', (err, value) ->
-          expect(err).to.be 'len'
+          expect(err.message).to.be 'len'
           expect(value).to.be undefined
 
         .run 'hello', (err, value) ->
-          expect(err).to.be 'len'
+          expect(err.message).to.be 'len'
           expect(value).to.be undefined
 
   describe '#email()', ->
@@ -165,11 +165,11 @@ describe 'StringSchema', ->
           expect(value).to.be 'hello@world.com'
 
         .run 'hello@world', (err, value) ->
-          expect(err).to.be 'email'
+          expect(err.message).to.be 'email'
           expect(value).to.be undefined
 
         .run 'hello@world@world.com', (err, value) ->
-          expect(err).to.be 'email'
+          expect(err.message).to.be 'email'
           expect(value).to.be undefined
 
   describe '#matches()', ->
@@ -177,7 +177,7 @@ describe 'StringSchema', ->
       # From http://net.tutsplus.com/tutorials/other/8-regular-expressions-you-should-know/
       cure.string.matches /^[a-z0-9_-]{3,16}$/  
         .run '-a', (err, value) ->
-          expect(err).to.be 'matches'
+          expect(err.message).to.be 'matches'
           expect(value).to.be undefined
 
         .run 'h3y', (err, value) ->
@@ -189,5 +189,5 @@ describe 'StringSchema', ->
           expect(value).to.be 'azerty123456-_'
 
         .run 'azerty123456-_qsdf', (err, value) ->
-          expect(err).to.be 'matches'
+          expect(err.message).to.be 'matches'
           expect(value).to.be undefined

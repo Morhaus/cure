@@ -10,7 +10,7 @@ describe 'NumberSchema', ->
           expect(value).to.be 6
 
         .run 5, (err, value) ->
-          expect(err).to.be 'min'
+          expect(err.message).to.be 'min'
           expect(value).to.be undefined
 
         .run 7, (err, value) ->
@@ -29,7 +29,7 @@ describe 'NumberSchema', ->
           expect(value).to.be 5
 
         .run 7, (err, value) ->
-          expect(err).to.be 'max'
+          expect(err.message).to.be 'max'
           expect(value).to.be undefined
 
   describe '#int()', ->
@@ -44,7 +44,7 @@ describe 'NumberSchema', ->
           expect(value).to.be 42
 
         .run 7.6, (err, value) ->
-          expect(err).to.be 'int'
+          expect(err.message).to.be 'int'
           expect(value).to.be undefined
 
         .run 7.0, (err, value) ->

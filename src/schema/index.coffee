@@ -2,6 +2,8 @@ Promise = require 'bluebird'
 async = require 'async'
 _ = require 'lodash'
 
+CureError = require '../error'
+
 module.exports = class Schema
   @define: (name, args...) ->
     if args.length is 1
@@ -27,12 +29,18 @@ module.exports = class Schema
         else if @_opts.optional
           runCallback null
         else
-          runCallback 'required'
+          runCallback (new CureError 'required', initialValue)
         return
 
       actionStep = (value, action, next) ->
         actionCallback = (err, value, skip) ->
           if err?
+            if typeof err is 'boolean'
+              err = new CureError action.name, value
+            else if typeof err is 'string'
+              err = new CureError err, value
+            else unless err instanceof CureError
+              throw new Error 'invalid error parameter'
             next err
           else if skip
             runCallback null, value

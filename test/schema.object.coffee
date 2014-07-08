@@ -10,7 +10,8 @@ describe 'ObjectSchema', ->
           expect(value).to.eql cat: 'kitty'
 
         .run cat: 'CAT', (err, value) ->
-          expect(err).to.eql [{key: 'cat', err: 'minLen'}]
+          expect(err.errors[0].key).to.be 'cat'
+          expect(err.errors[0].error.message).to.be 'minLen'
           expect(value).to.be undefined
 
     it 'should fill defaults of sub-properties when they do not exist', ->

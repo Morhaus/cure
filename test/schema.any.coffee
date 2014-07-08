@@ -32,7 +32,7 @@ describe 'AnySchema', ->
           expect(value).to.be 'toast'
 
         .run 'kitty cat', (err, value) ->
-          expect(err).to.be 'in'
+          expect(err.message).to.be 'in'
           expect(value).to.be undefined
 
   describe '#equals()', ->
@@ -43,7 +43,7 @@ describe 'AnySchema', ->
           expect(value).to.be 4
 
         .run 5, (err, value) ->
-          expect(err).to.be 'equals'
+          expect(err.message).to.be 'equals'
           expect(value).to.be undefined
 
   describe '#strictEquals()', ->
@@ -57,7 +57,7 @@ describe 'AnySchema', ->
           expect(value).to.be kitty
 
         .run toast, (err, value) ->
-          expect(err).to.be 'strictEquals'
+          expect(err.message).to.be 'strictEquals'
           expect(value).to.be undefined
 
   describe '#empty()', ->
@@ -76,15 +76,15 @@ describe 'AnySchema', ->
           expect(value).to.eql {}
 
         .run 'hello', (err, value) ->
-          expect(err).to.be 'empty'
+          expect(err.message).to.be 'empty'
           expect(value).to.be undefined
 
         .run ['hello'], (err, value) ->
-          expect(err).to.be 'empty'
+          expect(err.message).to.be 'empty'
           expect(value).to.be undefined
 
         .run { hello: 'there' }, (err, value) ->
-          expect(err).to.be 'empty'
+          expect(err.message).to.be 'empty'
           expect(value).to.be undefined
 
   describe '#is()', ->
@@ -95,12 +95,12 @@ describe 'AnySchema', ->
           expect(value).to.be ''
 
         .run [], (err, value) ->
-          expect(err).to.be 'is'
+          expect(err.message).to.be 'is'
           expect(value).to.be undefined
 
       cure.any.is Array
         .run '', (err, value) ->
-          expect(err).to.be 'is'
+          expect(err.message).to.be 'is'
           expect(value).to.be undefined
 
         .run [], (err, value) ->
@@ -111,15 +111,15 @@ describe 'AnySchema', ->
     it 'should check if the value is greater than a given value', ->
       cure.any.gt 5
         .run '4', (err, value) ->
-          expect(err).to.be 'gt'
+          expect(err.message).to.be 'gt'
           expect(value).to.be undefined
 
         .run 4, (err, value) ->
-          expect(err).to.be 'gt'
+          expect(err.message).to.be 'gt'
           expect(value).to.be undefined
 
         .run 5, (err, value) ->
-          expect(err).to.be 'gt'
+          expect(err.message).to.be 'gt'
           expect(value).to.be undefined
 
         .run 6, (err, value) ->
@@ -132,11 +132,11 @@ describe 'AnySchema', ->
 
       cure.any.gt 'e'
         .run 'a', (err, value) ->
-          expect(err).to.be 'gt'
+          expect(err.message).to.be 'gt'
           expect(value).to.be undefined
 
         .run 'e', (err, value) ->
-          expect(err).to.be 'gt'
+          expect(err.message).to.be 'gt'
           expect(value).to.be undefined
 
         .run 'g', (err, value) ->
@@ -147,11 +147,11 @@ describe 'AnySchema', ->
     it 'should check if the value is greater than or equal to a given value', ->
       cure.any.gte 5
         .run '4', (err, value) ->
-          expect(err).to.be 'gte'
+          expect(err.message).to.be 'gte'
           expect(value).to.be undefined
 
         .run 4, (err, value) ->
-          expect(err).to.be 'gte'
+          expect(err.message).to.be 'gte'
           expect(value).to.be undefined
 
         .run 5, (err, value) ->
@@ -168,7 +168,7 @@ describe 'AnySchema', ->
 
       cure.any.gte 'e'
         .run 'a', (err, value) ->
-          expect(err).to.be 'gte'
+          expect(err.message).to.be 'gte'
           expect(value).to.be undefined
 
         .run 'e', (err, value) ->
@@ -191,15 +191,15 @@ describe 'AnySchema', ->
           expect(value).to.be 4
 
         .run 5, (err, value) ->
-          expect(err).to.be 'lt'
+          expect(err.message).to.be 'lt'
           expect(value).to.be undefined
 
         .run 6, (err, value) ->
-          expect(err).to.be 'lt'
+          expect(err.message).to.be 'lt'
           expect(value).to.be undefined
 
         .run '6', (err, value) ->
-          expect(err).to.be 'lt'
+          expect(err.message).to.be 'lt'
           expect(value).to.be undefined
 
       cure.any.lt 'e'
@@ -208,11 +208,11 @@ describe 'AnySchema', ->
           expect(value).to.be 'a'
 
         .run 'e', (err, value) ->
-          expect(err).to.be 'lt'
+          expect(err.message).to.be 'lt'
           expect(value).to.be undefined
 
         .run 'g', (err, value) ->
-          expect(err).to.be 'lt'
+          expect(err.message).to.be 'lt'
           expect(value).to.be undefined
 
   describe '#lte()', ->
@@ -231,11 +231,11 @@ describe 'AnySchema', ->
           expect(value).to.be 5
 
         .run 6, (err, value) ->
-          expect(err).to.be 'lte'
+          expect(err.message).to.be 'lte'
           expect(value).to.be undefined
 
         .run '6', (err, value) ->
-          expect(err).to.be 'lte'
+          expect(err.message).to.be 'lte'
           expect(value).to.be undefined
 
       cure.any.lte 'e'
@@ -248,7 +248,7 @@ describe 'AnySchema', ->
           expect(value).to.be 'e'
 
         .run 'g', (err, value) ->
-          expect(err).to.be 'lte'
+          expect(err.message).to.be 'lte'
           expect(value).to.be undefined
 
   describe '#action()', ->
@@ -258,11 +258,16 @@ describe 'AnySchema', ->
           expect(err).to.be null
           expect(value).to.eql ['hello', 'you']
 
-      cure.any.action (value, callback) -> if value is 'cat' then (callback null, "kitty #{value}") else (callback 'sad face :(', value)
+      cure.any
+        .action (value, callback) ->
+          if value is 'cat'
+            callback null, "kitty #{value}"
+          else
+            callback 'sad face :('
         .run 'cat', (err, value) ->
           expect(err).to.be null
           expect(value).to.be 'kitty cat'
 
         .run 'pony', (err, value) ->
-          expect(err).to.be 'sad face :('
+          expect(err.message).to.be 'sad face :('
           expect(value).to.be undefined

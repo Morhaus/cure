@@ -37,48 +37,48 @@ StringSchema
     callback null, (JSON.parse value)
 
   # Validation
-  .define 'includes', (value, [strs, err], callback) ->
+  .define 'includes', (value, [strs], callback) ->
     strs = [strs] unless (_.isArray strs)
     for str in strs
       unless (_.contains value, str)
-        return callback (err or 'includes'), value
+        return callback yes
 
     callback null, value
 
-  .define 'excludes', (value, [strs, err], callback) ->
+  .define 'excludes', (value, [strs], callback) ->
     strs = [strs] unless (_.isArray strs)
     for str in strs
       if (_.contains value, str)
-        return callback (err or 'excludes'), value
+        return callback yes
 
     callback null, value
 
-  .define 'minLen', (value, [min, err], callback) ->
+  .define 'minLen', (value, [min], callback) ->
     if value.length >= min
       callback null, value
     else
-      callback (err or 'minLen'), value
+      callback yes
 
-  .define 'maxLen', (value, [max, err], callback) ->
+  .define 'maxLen', (value, [max], callback) ->
     if value.length <= max
       callback null, value
     else
-      callback (err or 'maxLen'), value
+      callback yes
 
-  .define 'len', (value, [len, err], callback) ->
+  .define 'len', (value, [len], callback) ->
     if value.length is len
       callback null, value
     else
-      callback (err or 'len'), value
+      callback yes
 
-  .define 'email', (value, [err], callback) ->
+  .define 'email', (value, callback) ->
     if (/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test value)
       callback null, value
     else
-      callback (err or 'email'), value
+      callback yes
 
-  .define 'matches', (value, [regex, err], callback) ->
+  .define 'matches', (value, [regex], callback) ->
     if (regex.test value)
       callback null, value
     else
-      callback (err or 'matches'), value
+      callback yes

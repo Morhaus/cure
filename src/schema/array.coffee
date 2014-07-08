@@ -16,39 +16,39 @@ ArraySchema
     callback null, (value.join args...)
 
   # Validation
-  .define 'includes', (value, [items, err], callback) ->
+  .define 'includes', (value, [items], callback) ->
     items = [items] unless (_.isArray items)
     for item in items
       unless (_.contains value, item)
-        return callback (err or 'includes'), value
+        return callback yes
 
     callback null, value
 
-  .define 'excludes', (value, [items, err], callback) ->
+  .define 'excludes', (value, [items], callback) ->
     items = [items] unless (_.isArray items)
     for item in items
       if (_.contains value, item)
-        return callback (err or 'excludes'), value
+        return callback yes
 
     callback null, value
 
-  .define 'minLen', (value, [min, err], callback) ->
+  .define 'minLen', (value, [min], callback) ->
     if value.length >= min
       callback null, value
     else
-      callback (err or 'minLen'), value
+      callback yes
 
-  .define 'maxLen', (value, [max, err], callback) ->
+  .define 'maxLen', (value, [max], callback) ->
     if value.length <= max
       callback null, value
     else
-      callback (err or 'maxLen'), value
+      callback yes
 
-  .define 'len', (value, [len, err], callback) ->
+  .define 'len', (value, [len], callback) ->
     if value.length is len
       callback null, value
     else
-      callback (err or 'len'), value
+      callback yes
 
   # Validation/Sanitization
   .define 'each', (value, [schema], callback) ->
