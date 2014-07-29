@@ -39,7 +39,7 @@ AnySchema
     callback null, (Array::slice.call value)
 
   .define 'toDate', DateSchema, (value, callback)->
-    callback null, (Date value)
+    callback null, (new Date value)
 
   .define 'toRegExp', RegExpSchema, (value, callback)->
     callback null, (RegExp value)
